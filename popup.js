@@ -22,3 +22,23 @@ document.querySelector("#save-csv").addEventListener("click", function() {
         });
     });
 })
+
+document.querySelector("#load-candidates").addEventListener("click", function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {type:"loadCandidates"}, function(response){
+            alert(response);
+        });
+    });
+})
+
+document.querySelector("#generate-report").addEventListener("click", function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {type:"generateReport"}, function(response){
+            response[1].forEach(v => {
+                download(v[0]+"-inmails-sent.csv", v[1])
+                download(v[0]+"-responses.csv", v[0])
+            })
+            download("hz-summary.csv", response[0])
+        });
+    });
+})
